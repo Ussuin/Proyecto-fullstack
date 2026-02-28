@@ -35,7 +35,7 @@
       </table>
       <p>{{ message }}</p>
     </div>
-
+ 
     <!-- Panel lateral -->
     <div class="card asignadas">
       <h2>Clases asignadas</h2>
@@ -313,37 +313,52 @@ function removeClass() {
 }
 
 async function confirmarClase() {
-  console.log('Botón confirmar presionado');
-  console.log('Valores seleccionados:', {
-    maestro: selectedMaestro.value,
-    alumno: selectedAlumno.value,
-    clase: selectedClase.value,
-    slot: selectedSlot.value
-  });
-  
-  if (!selectedMaestro.value || !selectedAlumno.value || !selectedClase.value) {
-    console.log('Campos incompletos');
-    message.value = "Debes seleccionar todos los campos.";
-    return;
+  message.value = "Procesando...";
+
+  let maestroId = selectedMaestro.value;
+  let alumnoId = selectedAlumno.value;
+  let claseId = selectedClase.value;
+
+  // Aquí es donde va el bloque para crear maestro/alumno/clase nuevos
+  if (maestroId === 'nuevo') {
+    const res = await props.onCrearRecurso('profesores', { 
+      nombre: nuevoNombreMaestro.value, 
+      especialidad: nuevaEspecialidad.value 
+    });
+    if (res) maestroId = res._id;
   }
-  
-  console.log('Todos los campos completos, procesando...');
 
-  // Extraemos día y hora del slot seleccionado
+  if (alumnoId === 'nuevo') {
+    const res = await props.onCrearRecurso('alumnos', { 
+      nombre: nuevoNombreAlumno.value,
+      edad: 10
+    });
+    if (res) alumnoId = res._id;
+  }
+
+  if (claseId === 'nuevo') {
+    const res = await props.onCrearRecurso('clases', { 
+      nombre: nuevoNombreClase.value,
+      descripcion: "Nueva clase agregada desde calendario"
+    });
+    if (res) claseId = res._id;
+  }
+
+  // Luego construyes el objeto y llamas a agregarClase
   const [dia, hora] = selectedSlot.value.split("-");
-
-  // Calculamos hora_fin (45 min después)
   const [h, m] = hora.split(':').map(Number);
   const fin = new Date(0, 0, 0, h, m + 45).toTimeString().slice(0, 5);
 
-  const objetoParaAPI = {
+  await agregarClase({
     dia_semana: dia,
     hora_inicio: hora,
     hora_fin: fin,
-    profesor_id: selectedMaestro.value, // Cambiado de maestro_id
-    alumno_id: selectedAlumno.value,
-    clase_id: selectedClase.value
-  };
+    profesor_id: maestroId,
+    alumno_id: alumnoId,
+    clase_id: claseId
+  });
+
+
 
   try {
     await agregarClase(objetoParaAPI);
@@ -353,6 +368,7 @@ async function confirmarClase() {
     message.value = "Error al guardar el horario";
   }
 }
+
 
 async function agregarClase(nuevaClase) {
   try {
@@ -369,13 +385,13 @@ async function agregarClase(nuevaClase) {
     const data = await res.json();
 
     if (!res.ok) {
-      // Si la API devuelve 400 o 409, lanzamos el error
       alert("Error: " + (data.error || "No se pudo guardar"));
       return;
     }
 
-    // Si todo salió bien, actualizamos la lista local
-    horarios.value.push(data);
+    // Emitimos al padre para que actualice su estado
+    emit("agregar-clase", data);
+
     alert("Clase guardada en la base de datos");
   } catch (error) {
     console.error("Error de red:", error);
@@ -383,23 +399,26 @@ async function agregarClase(nuevaClase) {
   }
 }
 
+
 async function eliminarClase(id) {
   try {
     const res = await fetch(`http://localhost:3000/horarios/${id}`, {
       method: "DELETE"
-    })
+    });
 
     if (res.ok) {
-      // Filtramos el array local para que Vue reaccione y borre la celda
-      horarios.value = horarios.value.filter(h => h.id !== id)
-      console.log(`Horario ${id} eliminado correctamente`)
+      // Emitimos al padre para que actualice su estado
+      emit("eliminar-clase", id);
+      console.log(`Horario ${id} eliminado correctamente`);
     } else {
-      alert("No se pudo eliminar de la base de datos")
+      alert("No se pudo eliminar de la base de datos");
     }
   } catch (error) {
-    console.error("Error al eliminar:", error)
+    console.error("Error al eliminar:", error);
   }
 }
+
+
 
 </script>
 

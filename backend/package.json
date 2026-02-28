@@ -16,10 +16,11 @@
     "@azure/msal-node": "^5.0.5",
     "@microsoft/microsoft-graph-client": "^3.0.7",
     "cors": "^2.8.6",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.2.3",
     "passport": "^0.7.0",
     "passport-azure-ad": "^4.3.5",
     "pg": "^8.18.0"
