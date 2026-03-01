@@ -1,7 +1,9 @@
-// backend/src/server.js
 require('dotenv').config();
 const dns = require('dns');
 const http = require('http');
+const express = require('express');
+const session = require('express-session');
+const passport = require('passport');
 const connectDB = require('./db');
 const app = require('./app'); // importa tu app de Express
 
@@ -10,6 +12,7 @@ dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 // Conectar a MongoDB Atlas
 connectDB();
+
 
 const PORT = process.env.PORT || 3000;
 const server = http.createServer(app);

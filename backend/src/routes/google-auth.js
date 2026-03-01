@@ -3,9 +3,7 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const router = express.Router();
 
-// Inicializar Passport
-router.use(passport.initialize());
-router.use(passport.session());
+
 
 // Configuración de Passport con Google
 passport.use(
@@ -15,7 +13,7 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/auth/google/callback",
     },
-    (accessToken, refreshToken, profile, done) => {
+    (accesToken, refreshToken,profile, done) => {
       console.log("Google Strategy callbackURL:", process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/auth/google/callback");
       // Aquí normalmente guardarías el usuario en la base de datos
       // Por ahora, solo retornamos el perfil
@@ -46,17 +44,16 @@ router.get("/google", (req, res) => {
 });
 
 // Callback de Google (redirección después del login)
+
+
 router.get(
   "/google/callback",
   passport.authenticate("google", { failureRedirect: "/login" }),
   (req, res) => {
-    // Autenticación exitosa - redirigir al frontend con los datos del usuario
     const userData = {
       message: "Autenticación exitosa con Google",
       user: req.user
     };
-    
-    // Redirigir al frontend con los datos como query parameter
     res.redirect(`http://localhost:5173?auth=${encodeURIComponent(JSON.stringify(userData))}`);
   }
 );

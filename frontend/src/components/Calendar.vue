@@ -174,20 +174,21 @@ const construirCalendario = () => {
   Object.keys(calendar).forEach(key => delete calendar[key]);
 
   props.horarios.forEach(h => {
-    const horaLimpia = h.hora_inicio ? h.hora_inicio.slice(0, 5) : "";
+    const horaLimpia = h.hora_inicio?.slice(0, 5);
     const dia = h.dia_semana || h.dia;
     if (!horaLimpia || !dia) return;
 
     const key = `${dia}-${horaLimpia}`;
-    const profesor = props.profesores.find(p => p._id === h.profesor_id || p.id === h.profesor_id);
-    const clase = props.clases.find(c => c._id === h.clase_id || c.id === h.clase_id);
+    const profesor = props.profesores.find(p => p._id === h.profesor_id);
+    const clase = props.clases.find(c => c._id === h.clase_id);
 
     calendar[key] = {
-      id: h._id || h.id,
+      _id: h._id, //  usa siempre _id
       texto: `${clase?.nombre || 'Clase'} - ${profesor?.nombre || 'Profesor'}`
     };
   });
 };
+
 
 watch([() => props.horarios, () => props.profesores, () => props.clases], () => {
   construirCalendario();
@@ -322,6 +323,7 @@ async function eliminarClase(id) {
     console.error("Error al eliminar:", error);
   }
 }
+
 </script>
 
 
