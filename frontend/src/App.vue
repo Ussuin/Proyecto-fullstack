@@ -149,7 +149,7 @@ async function crearRecurso(tipo, datos) {
             :horarios="horarios" 
             :clases="clases" 
             :alumnos="alumnos"
-            :maestros="profesores"
+            :profesores="profesores"
             :onCrearRecurso="crearRecurso"
             @agregar-clase="horarios.push($event)"
             @eliminar-clase="horarios = horarios.filter(h._id !== $event)"
