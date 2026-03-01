@@ -3,6 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const session = require("express-session");
+const passport =require("passport");
 
 const usuarios = require("./routes/usuarios");
 const profesores = require("./routes/profesores");
@@ -23,6 +24,9 @@ app.use(session({
   cookie: { secure: false } // false para desarrollo (http), true para producción (https)
 }));
 
+
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(cors());
 app.use(express.json());
 
@@ -36,6 +40,8 @@ app.use("/horarios", horarios);
 app.use("/auth", googleAuth);
 app.use("/auth", githubAuth);
 app.use("/weather", weather);
+
+
 
 // error handler simple
 app.use((err, req, res, next) => {
