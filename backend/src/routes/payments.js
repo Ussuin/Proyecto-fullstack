@@ -21,9 +21,9 @@ router.post('/pago', async (req, res) => {
         }
       ],
       back_urls: {
-        success: 'https://localhost:5173/success',
-        failure: 'https://localhost:5173/failure',
-        pending: 'https://localhost:5173/pending'
+        success: 'https://www.google.com',
+        failure: 'https://www.google.com',
+        pending: 'https://www.google.com'
       },
       auto_return: 'approved'
     };
