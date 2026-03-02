@@ -111,12 +111,8 @@
   </div>
 </template>
 
-
 <script setup>
 import { reactive, ref, computed, watch, onMounted } from 'vue'
-
-// Base URL del API configurable via Vite env: VITE_API_URL
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000'
 
 // Props que vienen del App.vue
 const props = defineProps({
@@ -167,6 +163,9 @@ const weekdaySlots = computed(() => {
   return slots
 })
 
+// URL base del backend (se adapta según entorno)
+const api = import.meta.env.VITE_API_URL;
+
 // Construir calendario usando populate
 const construirCalendario = () => {
   if (!props.horarios?.length) return;
@@ -180,7 +179,6 @@ const construirCalendario = () => {
 
     const key = `${dia}-${horaLimpia}`;
 
-    // Gracias a populate, ya tenemos objetos completos
     const clase = h.clase_id;
     const profesor = h.profesor_id;
     const alumno = h.alumno_id;
@@ -207,16 +205,12 @@ function isSlotBlocked(day, slot) {
   const minute = time[1];
   const totalMinutes = hour * 60 + minute;
   
-  // Monday to Friday: 10:00 - 13:45 (600 - 825 minutes)
   if (day !== 'Sábado' && totalMinutes >= 600 && totalMinutes <= 825) {
     return true;
   }
-  
-  // Saturday: 14:45 - 19:00 (885 - 1140 minutes)
   if (day === 'Sábado' && totalMinutes >= 885 && totalMinutes <= 1140) {
     return true;
   }
-  
   return false;
 }
 
@@ -288,7 +282,6 @@ async function confirmarClase() {
     const nuevoHorario = await agregarClase(objetoParaAPI);
     console.log("Respuesta del servidor:", nuevoHorario);
 
-    // Usamos populate en la respuesta del backend
     const clase = nuevoHorario.clase_id;
     const profesor = nuevoHorario.profesor_id;
     const alumno = nuevoHorario.alumno_id;
@@ -308,8 +301,7 @@ async function confirmarClase() {
 
 async function agregarClase(nuevaClase) {
   try {
-    console.log('Enviando clase al servidor:', nuevaClase);
-  const res = await fetch(`${API_BASE}/horarios`, {
+    const res = await fetch(`${api}/horarios`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(nuevaClase)
@@ -327,24 +319,20 @@ async function agregarClase(nuevaClase) {
   }
 }
 
-
-
 async function eliminarClase(id) {
   if (!id) {
     alert("No se encontró el ID de la clase");
     return;
   }
 
-  // Confirmación antes de eliminar
   const seguro = window.confirm("¿Estás seguro de que quieres eliminar esta clase?");
   if (!seguro) {
     message.value = "Eliminación cancelada";
     return;
   }
 
-  console.log("Intentando eliminar horario con id:", id);
   try {
-  const res = await fetch(`${API_BASE}/horarios/${id}`, { method: "DELETE" });
+    const res = await fetch(`${api}/horarios/${id}`, { method: "DELETE" });
     if (res.ok) {
       delete calendar[selectedSlot.value];
       message.value = "Clase eliminada correctamente";
@@ -355,9 +343,7 @@ async function eliminarClase(id) {
     console.error("Error al eliminar:", error);
   }
 }
-
 </script>
-
 
 
 <style scoped>
