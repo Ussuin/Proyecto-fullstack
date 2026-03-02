@@ -29,6 +29,30 @@ Bienvenido al repositorio oficial del proyecto **AARDEM**, una solución integra
 - **Git**
 - **Cuenta de MongoDB Atlas** (gratuita)
 
+## Librerias Requeridas
+
+## Librerias para el Backend
+- npm install express
+- npm install mongoose
+- npm install cors
+- npm install dotenv
+- npm install nodemon save-dev
+- npm install passport passport-google-oauth20 passport-github2
+- npm install bcrypt jsonwebtoken
+- npm install body-parser
+- npm install morgan
+- npm install axios
+- npm install @googlemaps/js-api-loader
+- npm install leaflet
+  
+## Librerias Para el Frontend
+- npm install vue
+- npm install vite
+- npm install axios
+- npm install vue-router
+- npm install pinia
+
+
 ### 1. Clonar el repositorio
 ```bash
 git clone https://github.com/Ussuin/Proyecto-fullstack.git
