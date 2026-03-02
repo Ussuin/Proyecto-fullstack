@@ -28,4 +28,5 @@
   "env": {
     "NODE_ENV": "production"
   }
+  ,"outputDirectory": "frontend/dist"
 }
