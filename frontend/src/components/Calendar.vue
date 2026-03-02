@@ -163,6 +163,12 @@ const weekdaySlots = computed(() => {
   }
   return slots
 })
+ 
+  const api = import.meta.env.VITE_API_URL;
+axios.get(`${api}/horarios`).then(res => {
+  console.log(res.data);
+});
+
 
 // Construir calendario usando populate
 const construirCalendario = () => {
