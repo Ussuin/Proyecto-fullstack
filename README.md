@@ -1,4 +1,4 @@
-# Sistema de Gestión - Escuela de Música AARDEM
+Sistema de Gestión - Escuela de Música AARDEM
 
 Bienvenido al repositorio oficial del proyecto **AARDEM**, una solución integral para la gestión de horarios, alumnos y clases, construida con tecnologías modernas de desarrollo web.
 
@@ -15,77 +15,85 @@ Bienvenido al repositorio oficial del proyecto **AARDEM**, una solución integra
 ### **Backend**
 
 * **Node.js & Express.js:** Servidor robusto para el manejo de la API REST.
-* **CORS:** Configurado para comunicación segura entre dominios.
-* **PostgreSQL:** Base de datos relacional para la persistencia de datos complejos.
-
-### **Librerias a instalar**
-
-# Instalar dependencias del backend echo "Instalando dependencias del backend..." cd backend npm install
-
-# Instalar dependencias del frontend echo "Instalando dependencias del frontend..." cd frontend npm install
+* **MongoDB Atlas:** Base de datos en la nube para persistencia de datos.
+* **OAuth:** Autenticación con Google y GitHub.
+* **JWT:** Gestión de tokens de autenticación.
+* **APIs Externas:** OpenWeatherMap (clima) y Mercado Pago (pagos).
 
 ---
 
-## Arquitectura del Sistema
+## Instalación y Configuración
 
-### Frontend (Interfaz de Usuario)
-
-Se implementó una estructura de componentes modulares donde destaca `Calendar.vue`. Este componente gestiona la lógica de la agenda semanal.
-
-* **Funcionalidad:** Visualización de horarios (08:00 a 21:00), asignación de clases mediante interacción directa y paneles laterales para gestión de catálogo.
-* **Estado:** Reactividad optimizada con la sintaxis `<script setup>`.
-
-### Backend (Servidor API)
-
-El corazón del sistema corre sobre **Express**, gestionando las rutas y la lógica de negocio.
-
-* **Endpoints:** Rutas preparadas para el manejo de usuarios, profesores, alumnos y horarios.
-* **Seguridad:** Implementación de middlewares para validación y control de acceso.
-
-### Base de Datos (PostgreSQL)
-
-Diseño de base de datos relacional llamada `escuela_alumnos` que incluye:
-
-* **Gestión de Roles:** Diferenciación entre Admin, Profesores y Alumnos.
-* **Control de Solapamientos:** Restricciones lógicas para evitar que un profesor o aula tenga dos clases al mismo tiempo.
-* **Esquema:** Tablas de login, correos electrónicos, cursos y descripciones detalladas.
-
----
-
-## 1. Requisitos Previos
-
-### **Opción A: Con Nix (Recomendado para desarrollo)**
-* **Nix** con flakes habilitados.
-* **Git**.
-
-### **Opción B: Sin Nix (Compatible con Windows, macOS, Linux)**
-* **Node.js 18+** - [nodejs.org](https://nodejs.org)
-* **PostgreSQL 16+** - [postgresql.org](https://postgresql.org/download/)
-* **Git**
-
-*Nota: Nix provee Node.js y Postgres automáticamente. Si no usas Nix, deberás instalarlos manualmente.*
-
----
-
-## Inicio Rápido (Recomendado)
+### Requisitos Previos
+- **Node.js 18+** - [nodejs.org](https://nodejs.org)
+- **Git**
+- **Cuenta de MongoDB Atlas** (gratuita)
 
 ### 1. Clonar el repositorio
 ```bash
-git clone https://github.com/AaronND7/dfs-PF-Full-Stack.git
-cd dfs-PF-Full-Stack
+git clone https://github.com/Ussuin/Proyecto-fullstack.git
+cd Proyecto-fullstack
 ```
 
-### 2. Iniciar Backend
+### 2. Configurar Backend
+
+#### Instalar dependencias
 ```bash
 cd backend
 npm install
-node src/server-weather-fixed.js
 ```
 
-### 3. Iniciar Frontend (en otra terminal)
+#### Configurar variables de entorno
+Crea un archivo `.env` en `backend/`:
+```env
+# Base de datos
+MONGODB_URI=mongodb+srv://usuario:password@cluster.mongodb.net/escuela_musica
+
+# Autenticación OAuth
+GOOGLE_CLIENT_ID=tu-google-client-id
+GOOGLE_CLIENT_SECRET=tu-google-client-secret
+GOOGLE_REDIRECT_URI=http://localhost:3000/auth/google/callback
+
+GITHUB_CLIENT_ID=tu-github-client-id
+GITHUB_CLIENT_SECRET=tu-github-client-secret
+GITHUB_CALLBACK_URL=http://localhost:3000/auth/github/callback
+
+# APIs Externas
+OPENWEATHER_API_KEY=tu-openweather-api-key
+OPENWEATHER_BASE_URL=https://api.openweathermap.org/data/2.5
+
+# Pagos
+MP_ACCESS_TOKEN=tu-mercado-pago-access-token
+
+# Sesión
+SESSION_SECRET=tu-secreto-super-seguro
+JWT_SECRET=tu-secreto-jwt-muy-seguro
+
+# Servidor
+PORT=3000
+```
+
+#### Iniciar Backend
+```bash
+node src/server.js
+```
+
+### 3. Configurar Frontend
+
+#### Instalar dependencias
 ```bash
 cd frontend
 npm install
+```
+
+#### Configurar variables de entorno (opcional)
+Crea un archivo `.env` en `frontend/`:
+```env
+VITE_API_URL=http://localhost:3000
+```
+
+#### Iniciar Frontend
+```bash
 npm run dev
 ```
 
@@ -95,395 +103,145 @@ npm run dev
 
 ---
 
-## 2. Instalación y Configuración
+## Arquitectura del Sistema
 
-### Clonar el repositorio
+### Frontend (Interfaz de Usuario)
 
-```bash
-git clone https://github.com/AaronND7/dfs-PF-Full-Stack.git
-cd dfs-PF-Full-Stack
+Se implementó una estructura de componentes modulares con Vue.js 3:
+
+* **Calendar.vue**: Gestión visual de horarios y clases
+* **WeatherWidget.vue**: Widget de clima en tiempo real
+* **PaymentButton.vue**: Integración con Mercado Pago
+* **LoginButton.vue**: Autenticación OAuth
+* **OpenStreetMap.vue**: Mapas interactivos
+
+### Backend (Servidor API)
+
+El corazón del sistema corre sobre **Express**, con:
+
+* **Endpoints REST**: Usuarios, profesores, alumnos, clases, horarios
+* **Autenticación OAuth**: Google y GitHub
+* **Middleware JWT**: Validación de tokens y roles
+* **APIs Externas**: Clima y pagos integrados
+* **Validación de datos**: Middleware personalizado
+
+### Base de Datos (MongoDB Atlas)
+
+* **Colecciones**: usuarios, profesores, alumnos, clases, horarios
+* **Relaciones**: Referencias entre documentos
+* **Escalabilidad**: Base de datos en la nube
+
+---
+
+## Funcionalidades Principales
+
+### 🎵 Gestión Académica
+- **CRUD completo** para usuarios, profesores, alumnos, clases y horarios
+- **Validación de datos** y reglas de negocio
+- **Control de solapamientos** en horarios
+
+### 🔐 Autenticación y Autorización
+- **OAuth** con Google y GitHub
+- **JWT** para gestión de sesiones
+- **Roles**: admin, profesor, alumno
+- **Middleware** de protección de rutas
+
+### 🌤️ Integración de APIs Externas
+- **OpenWeatherMap**: Clima en tiempo real
+- **Mercado Pago**: Sistema de pagos
+- **OpenStreetMap**: Mapas interactivos
+
+### 📱 Experiencia de Usuario
+- **Diseño responsivo** para todos los dispositivos
+- **Interfaz moderna** con Vue.js 3
+- **Navegación intuitiva** entre secciones
+
+---
+
+## Estructura del Proyecto
+
+```
+Proyecto-fullstack/
+├── backend/
+│   ├── src/
+│   │   ├── routes/          # Endpoints API
+│   │   ├── middleware/      # Autenticación y validación
+│   │   ├── models/          # Modelos de datos
+│   │   ├── app.js          # Configuración Express
+│   │   └── server.js       # Punto de entrada
+│   ├── .env                # Variables de entorno
+│   └── package.json        # Dependencias
+├── frontend/
+│   ├── src/
+│   │   ├── components/     # Componentes Vue.js
+│   │   ├── App.vue        # Componente principal
+│   │   └── main.js        # Punto de entrada
+│   ├── .env               # Variables de entorno
+│   └── package.json       # Dependencias
+├── documentacion_tecnica.txt
+└── README.md
 ```
 
-### **Opción A: Con Nix**
+---
 
-```bash
-nix develop --extra-experimental-features nix-command --extra-experimental-features flakes
-```
+## Endpoints de la API
 
-### **Opción B: Sin Nix (Windows, macOS, Linux)**
+### Autenticación
+- `GET /auth/google` - Iniciar OAuth con Google
+- `GET /auth/github` - Iniciar OAuth con GitHub
 
-#### **Windows (PowerShell):**
-```powershell
-# Configurar base de datos
-.\scripts\setup-db.ps1
+### Usuarios
+- `GET /usuarios` - Listar usuarios
+- `POST /usuarios` - Crear usuario
+- `GET /usuarios/:id` - Obtener usuario
+- `PUT /usuarios/:id` - Actualizar usuario
+- `DELETE /usuarios/:id` - Eliminar usuario
 
-# Iniciar desarrollo
-.\scripts\start-dev.ps1
-```
+### Gestión Académica
+- `GET /alumnos` - Listar alumnos
+- `GET /profesores` - Listar profesores
+- `GET /clases` - Listar clases
+- `GET /horarios` - Listar horarios
 
-#### **macOS/Linux (Terminal):**
-```bash
-# Hacer scripts ejecutables (solo Linux/macOS)
-chmod +x scripts/*.sh
+### APIs Externas
+- `GET /weather/current/:city` - Clima actual
+- `GET /weather/forecast/:city` - Pronóstico del clima
+- `POST /api/pago` - Crear pago con Mercado Pago
 
-# Configurar base de datos
-./scripts/setup-db.sh
+---
 
-# Iniciar desarrollo
-./scripts/start-dev.sh
-```
+## Desarrollo y Contribución
 
-#### **Manual (todas las plataformas):**
+### Scripts Útiles
 ```bash
 # Backend
 cd backend
-npm install
-node src/server-weather-fixed.js
+npm install          # Instalar dependencias
+node src/server.js    # Iniciar servidor
 
-# Frontend (en otra terminal)
+# Frontend
 cd frontend
-npm install
-npm run dev
+npm install          # Instalar dependencias
+npm run dev          # Modo desarrollo
+npm run build        # Compilar para producción
 ```
 
----
-
-## 3. Configuración de Base de Datos
-
-### **Con Scripts Automatizados (Recomendado)**
-
-Los scripts crean automáticamente:
-- Usuario `app_user` con contraseña `devpass`
-- Base de datos `escuela_musica`
-- Esquema y datos iniciales
-
-#### **Windows:**
-```powershell
-.\scripts\setup-db.ps1
-```
-
-#### **macOS/Linux:**
-```bash
-./scripts/setup-db.sh
-```
-
-### **Manual (si scripts fallan)**
-
-1. **Crear usuario y base de datos manualmente:**
-```sql
--- Conectarse a PostgreSQL como postgres
-CREATE USER app_user WITH PASSWORD 'devpass' CREATEDB;
-CREATE DATABASE escuela_musica OWNER app_user;
-```
-
-2. **Cargar esquema:**
-```bash
-psql -h localhost -U app_user -d escuela_musica -f backend/db/setup.sql
-```
+### Flujo de Trabajo
+1. Crear una rama para nuevas funcionalidades
+2. Desarrollar y probar localmente
+3. Crear pull request con descripción de cambios
+4. Revisión y merge a la rama principal
 
 ---
 
-## 4. Acceso a la Aplicación
+## Licencia
 
-### **URLs de Acceso:**
-- **Frontend:** http://localhost:5173
-- **Backend API:** http://localhost:3000
-- **Base de Datos:** localhost:5432
-
-### **Verificación:**
-```bash
-# Verificar API
-curl http://localhost:3000
-# Debería mostrar: {"status":"API running"}
-```
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para detalles.
 
 ---
 
-## 5. Compatibilidad Multiplataforma
-
-### **Windows:**
-- PowerShell scripts (`.ps1`)
-- npm/node.js nativo
-- PostgreSQL para Windows
-
-### **macOS:**
-- Bash scripts (`.sh`)
-- Homebrew soporte
-- PostgreSQL nativo
-
-### **Linux:**
-- Bash scripts (`.sh`)
-- npm/node.js nativo
-- PostgreSQL (apt/yum)
-
-### **Características Universales:**
-- Mismas funcionalidades en todas las plataformas
-- Mismas dependencias npm
-- Misma estructura de base de datos
-- Scripts automatizados según plataforma
-
----
-
-## Galería del Proyecto
-
-Aquí se muestran las capturas de pantalla de los diferentes módulos del sistema:
-
-| Interfaz de Calendario | Respuesta del API |
-| --- | --- |
-|![](images/2026-02-03-235706.png) | ![](images/2026-02-04-000515.png) |
-
-
-# Documentacion de la API
-**Base URL (dev)**
-
-```
-http://localhost:3000
-```
-
-**Formato:** JSON
-**Charset:** UTF-8
-
---
-
-# Convenciones globales
-
-## Headers requeridos
-
-Para `POST` y `PATCH`:
-
-```
-Content-Type: application/json
-```
-
----
-
-## Estructura de error estándar
-
-```json
-{
-  "error": "Mensaje descriptivo del problema"
-}
-```
-
----
-
-## Códigos de estado
-
-| Código | Uso                                         |
-| ------ | ------------------------------------------- |
-| 200    | Éxito                                       |
-| 201    | Recurso creado                              |
-| 204    | Eliminado sin contenido                     |
-| 400    | Validación fallida                          |
-| 404    | Recurso no encontrado                       |
-| 409    | Conflicto de datos (reglas de negocio / DB) |
-| 500    | Error interno                               |
-
----
-
-# USUARIOS
-
-Tabla: `usuarios`
-
-| Campo    | Tipo         | Restricciones             |
-| -------- | ------------ | ------------------------- |
-| id       | SERIAL       | PK                        |
-| nombre   | VARCHAR(100) | NOT NULL                  |
-| email    | VARCHAR(100) | UNIQUE                    |
-| password | VARCHAR(200) | NOT NULL                  |
-| rol      | VARCHAR(20)  | admin / profesor / alumno |
-
----
-
-### GET `/usuarios`
-
-**Descripción:** Lista usuarios sin password.
-
-**Response 200**
-
-```json
-[
-  {
-    "id": 1,
-    "nombre": "Admin",
-    "email": "admin@escuela.com",
-    "rol": "admin"
-  }
-]
-```
-
----
-
-### GET `/usuarios/:id`
-
-**Response 200**
-
-```json
-{
-  "id": 1,
-  "nombre": "Admin",
-  "email": "admin@escuela.com",
-  "rol": "admin"
-}
-```
-
-**404** si no existe.
-
----
-
-### POST `/usuarios`
-
-**Body**
-
-```json
-{
-  "nombre": "Juan",
-  "email": "juan@mail.com",
-  "password": "1234",
-  "rol": "alumno"
-}
-```
-
-**Validaciones**
-
-| Regla           | Error |
-| --------------- | ----- |
-| rol inválido    | 400   |
-| email duplicado | 409   |
-
-**201**
-
----
-
-### PATCH `/usuarios/:id`
-
-Actualiza parcialmente.
-
----
-
-### DELETE `/usuarios/:id`
-
-Elimina usuario.
-
----
-
-# PROFESORES
-
-Tabla: `profesores`
-
-| Campo        | Tipo         |
-| ------------ | ------------ |
-| id           | SERIAL       |
-| nombre       | VARCHAR(100) |
-| especialidad | VARCHAR(100) |
-
-CRUD estándar.
-
----
-
-# ALUMNOS
-
-| Campo  | Tipo         |
-| ------ | ------------ |
-| id     | SERIAL       |
-| nombre | VARCHAR(100) |
-| edad   | INT (>0)     |
-
-Validación edad > 0.
-
----
-
-# CLASES
-
-| Campo       | Tipo         |
-| ----------- | ------------ |
-| id          | SERIAL       |
-| nombre      | VARCHAR(100) |
-| descripcion | TEXT         |
-
----
-
-# HORARIOS
-
-Entidad crítica.
-
-| Campo       | Tipo    | FK            |
-| ----------- | ------- | ------------- |
-| clase_id    | INT     | clases.id     |
-| profesor_id | INT     | profesores.id |
-| alumno_id   | INT     | alumnos.id    |
-| dia_semana  | VARCHAR |               |
-| hora_inicio | TIME    |               |
-| hora_fin    | TIME    |               |
-
----
-
-### GET `/horarios`
-
-**200**
-
-```json
-[
-  {
-    "id": 1,
-    "clase_id": 1,
-    "profesor_id": 1,
-    "alumno_id": 1,
-    "dia_semana": "Lunes",
-    "hora_inicio": "10:00:00",
-    "hora_fin": "11:00:00"
-  }
-]
-```
-
----
-
-### POST `/horarios`
-
-**Body**
-
-```json
-{
-  "clase_id": 1,
-  "profesor_id": 1,
-  "alumno_id": 1,
-  "dia_semana": "Lunes",
-  "hora_inicio": "10:00",
-  "hora_fin": "11:00"
-}
-```
-
----
-
-### Reglas de negocio
-
-| Regla                   | Código |
-| ----------------------- | ------ |
-| hora_inicio >= hora_fin | 400    |
-| FK inexistente          | 400    |
-| Solapamiento profesor   | 409    |
-| Solapamiento alumno     | 409    |
-
----
-
-### PATCH `/horarios/:id`
-
-Permite modificar cualquier campo.
-
----
-
-### DELETE `/horarios/:id`
-
-Elimina horario.
-
----
-
-# Relaciones
-
-```
-horarios → clases
-horarios → profesores
-horarios → alumnos
-```
-
-Eliminaciones en cascada.
+## Contacto
+
+- **Repositorio**: https://github.com/Ussuin/Proyecto-fullstack
+- **Issues**: Reportar problemas en GitHub
+- **Documentación**: Ver `documentacion_tecnica.txt`
