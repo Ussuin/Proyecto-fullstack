@@ -5,9 +5,12 @@
 </template>
 
 <script setup>
+// Base URL del API configurable via Vite env: VITE_API_URL
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+
 async function iniciarPago() {
   try {
-    const response = await fetch("http://localhost:3000/api/pago", {
+    const response = await fetch(`${API_BASE}/api/pago`, {
       method: "POST",
       headers: { "Content-Type": "application/json" }
     });

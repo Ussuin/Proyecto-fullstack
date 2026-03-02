@@ -49,6 +49,9 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 
+// Base URL del API configurable via Vite env: VITE_API_URL
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+
 const weather = ref(null)
 const loading = ref(false)
 const error = ref('')
@@ -64,7 +67,7 @@ const getWeather = async () => {
   error.value = ''
   
   try {
-    const response = await fetch(`http://localhost:3000/weather/current/${encodeURIComponent(cityInput.value)}`)
+  const response = await fetch(`${API_BASE}/weather/current/${encodeURIComponent(cityInput.value)}`)
     const data = await response.json()
     
     if (response.ok) {

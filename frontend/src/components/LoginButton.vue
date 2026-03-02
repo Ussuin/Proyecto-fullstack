@@ -30,6 +30,9 @@
 <script setup>
 import { ref } from 'vue'
 
+// Base URL del API configurable via Vite env: VITE_API_URL
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+
 const loading = ref(false)
 const error = ref('')
 
@@ -40,8 +43,8 @@ const loginWithGoogle = async () => {
   error.value = ''
   
   try {
-    // Redirigir al backend para iniciar el flujo de autenticación con Google
-    window.location.href = 'http://localhost:3000/auth/google'
+  // Redirigir al backend para iniciar el flujo de autenticación con Google
+  window.location.href = `${API_BASE}/auth/google`
   } catch (err) {
     error.value = 'Error al iniciar sesión con Google'
     console.error('Error de login:', err)
@@ -55,8 +58,8 @@ const loginWithGitHub = async () => {
   error.value = ''
   
   try {
-    // Redirigir al backend para iniciar el flujo de autenticación con GitHub
-    window.location.href = 'http://localhost:3000/auth/github'
+  // Redirigir al backend para iniciar el flujo de autenticación con GitHub
+  window.location.href = `${API_BASE}/auth/github`
   } catch (err) {
     error.value = 'Error al iniciar sesión con GitHub'
     console.error('Error de login:', err)

@@ -115,6 +115,9 @@
 <script setup>
 import { reactive, ref, computed, watch, onMounted } from 'vue'
 
+// Base URL del API configurable via Vite env: VITE_API_URL
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+
 // Props que vienen del App.vue
 const props = defineProps({
   horarios: { type: Array, default: () => [] },
@@ -306,7 +309,7 @@ async function confirmarClase() {
 async function agregarClase(nuevaClase) {
   try {
     console.log('Enviando clase al servidor:', nuevaClase);
-    const res = await fetch("http://localhost:3000/horarios", {
+  const res = await fetch(`${API_BASE}/horarios`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(nuevaClase)
@@ -341,7 +344,7 @@ async function eliminarClase(id) {
 
   console.log("Intentando eliminar horario con id:", id);
   try {
-    const res = await fetch(`http://localhost:3000/horarios/${id}`, { method: "DELETE" });
+  const res = await fetch(`${API_BASE}/horarios/${id}`, { method: "DELETE" });
     if (res.ok) {
       delete calendar[selectedSlot.value];
       message.value = "Clase eliminada correctamente";

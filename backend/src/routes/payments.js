@@ -10,6 +10,9 @@ const mpClient = new mercadopago.MercadoPagoConfig({
 
 const preferenceClient = new mercadopago.Preference(mpClient);
 
+// URL del frontend (para redirecciones después del pago). Configurable en producción.
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173'
+
 router.post('/pago', async (req, res) => {
   try {
     const preference = {
@@ -21,9 +24,9 @@ router.post('/pago', async (req, res) => {
         }
       ],
       back_urls: {
-        success: 'https://localhost:5173/success',
-        failure: 'https://localhost:5173/failure',
-        pending: 'https://localhost:5173/pending'
+        success: `${FRONTEND_URL}/success`,
+        failure: `${FRONTEND_URL}/failure`,
+        pending: `${FRONTEND_URL}/pending`
       },
       auto_return: 'approved'
     };
