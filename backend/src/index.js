@@ -1,7 +1,24 @@
-// Entry point para despliegue serverless en Vercel
-// Exporta la app de Express para que @vercel/node la use como handler
+// backend/src/index.js
 require('dotenv').config();
-const app = require('./app');
+const dns = require('dns');
+const http = require('http');
+const connectDB = require('./db');
+const app = require('./app'); // importa tu app de Express
 
-// Exporta la app directamente — Vercel envuelve esta función y la ejecuta
-module.exports = app;
+// Configurar Google DNS para resolver MongoDB Atlas (opcional, puedes quitarlo si conecta bien sin esto)
+dns.setServers(['8.8.8.8', '8.8.4.4']);
+
+// Conectar a MongoDB Atlas
+connectDB();
+
+// Puerto dinámico (Vercel asigna automáticamente uno en producción)
+const PORT = process.env.PORT || 3000;
+
+// Crear servidor HTTP con Express
+const server = http.createServer(app);
+
+server.listen(PORT, () => {
+  console.log(`API running on port ${PORT}`);
+  console.log('MongoDB Atlas connection ready');
+  console.log("Token cargado:", process.env.MP_ACCESS_TOKEN);
+});
