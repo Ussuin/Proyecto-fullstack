@@ -68,40 +68,6 @@ cd backend
 npm install
 ```
 
-#### Configurar variables de entorno
-Crea un archivo `.env` en `backend/`:
-```env
-# Base de datos
-MONGODB_URI=mongodb+srv://usuario:password@cluster.mongodb.net/escuela_musica
-
-# Autenticación OAuth
-GOOGLE_CLIENT_ID=tu-google-client-id
-GOOGLE_CLIENT_SECRET=tu-google-client-secret
-GOOGLE_REDIRECT_URI=http://localhost:3000/auth/google/callback
-
-GITHUB_CLIENT_ID=tu-github-client-id
-GITHUB_CLIENT_SECRET=tu-github-client-secret
-GITHUB_CALLBACK_URL=http://localhost:3000/auth/github/callback
-
-# APIs Externas
-OPENWEATHER_API_KEY=tu-openweather-api-key
-OPENWEATHER_BASE_URL=https://api.openweathermap.org/data/2.5
-
-# Pagos
-MP_ACCESS_TOKEN=tu-mercado-pago-access-token
-
-# Sesión
-SESSION_SECRET=tu-secreto-super-seguro
-JWT_SECRET=tu-secreto-jwt-muy-seguro
-
-# Servidor
-PORT=3000
-```
-
-#### Iniciar Backend
-```bash
-node src/server.js
-```
 
 ### 3. Configurar Frontend
 
