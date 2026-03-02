@@ -6,11 +6,12 @@
 
 <script setup>
 // Base URL del API configurable via Vite env: VITE_API_URL
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+// Por defecto en producción usamos rutas relativas al backend servido en /api
+const API_BASE = import.meta.env.VITE_API_URL || '/api'
 
 async function iniciarPago() {
   try {
-    const response = await fetch(`${API_BASE}/api/pago`, {
+    const response = await fetch(`${API_BASE}/pago`, {
       method: "POST",
       headers: { "Content-Type": "application/json" }
     });
