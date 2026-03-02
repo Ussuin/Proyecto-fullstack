@@ -22,7 +22,7 @@ Bienvenido al repositorio oficial del proyecto **AARDEM**, una solución integra
 
 ---
 ## Video de youtube
-* **https://youtu.be/o-kL0Z37DtA
+* https://youtu.be/o-kL0Z37DtA
 ## Instalación y Configuración
 
 ### Requisitos Previos
