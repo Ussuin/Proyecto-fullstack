@@ -21,7 +21,8 @@ Bienvenido al repositorio oficial del proyecto **AARDEM**, una solución integra
 * **APIs Externas:** OpenWeatherMap (clima) y Mercado Pago (pagos).
 
 ---
-
+## Video de youtube
+* **https://youtu.be/o-kL0Z37DtA
 ## Instalación y Configuración
 
 ### Requisitos Previos
