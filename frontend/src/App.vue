@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue"
 import Calendar from './components/Calendar.vue'
 import LoginButton from './components/LoginButton.vue'
 import WeatherWidget from './components/WeatherWidget.vue'
+import PaymentButton from './components/PaymentButton.vue'
 
 const horarios = ref([])
 const clases = ref([])
@@ -137,6 +138,7 @@ async function crearRecurso(tipo, datos) {
         <h2>Bienvenido al Sistema de Gestión</h2>
         <p>Por favor, inicia sesión con tu cuenta de Google para continuar</p>
         <LoginButton @login-success="handleLoginSuccess" />
+        
       </div>
       
       <!-- Mostrar calendario si hay usuario autenticado -->
@@ -154,6 +156,9 @@ async function crearRecurso(tipo, datos) {
             @agregar-clase="horarios.push($event)"
             @eliminar-clase="horarios = horarios.filter(h._id !== $event)"
           />
+
+          <!--agregamos el botón de pago -->
+          <PaymentButton />
         </div>
       </div>
     </main>
@@ -163,6 +168,7 @@ async function crearRecurso(tipo, datos) {
     </footer>
   </div>
 </template>
+
 
 <style>
 #app {

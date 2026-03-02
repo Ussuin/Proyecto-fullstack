@@ -13,6 +13,7 @@ const horarios = require("./routes/horarios");
 const googleAuth = require("./routes/google-auth");
 const githubAuth = require("./routes/github-auth");
 const weather = require("./routes/weather");
+const paymentsRouter = require('./routes/payments');
 
 const app = express();
 
@@ -40,6 +41,8 @@ app.use("/horarios", horarios);
 app.use("/auth", googleAuth);
 app.use("/auth", githubAuth);
 app.use("/weather", weather);
+app.use('/api', paymentsRouter);
+
 
 
 

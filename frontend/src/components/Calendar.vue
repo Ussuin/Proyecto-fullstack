@@ -15,8 +15,11 @@
           <tr v-for="slot in saturdaySlots" :key="slot">
             <td>{{ slot }}</td>
             <td v-for="day in days.slice(0,5)" :key="day"></td>
-            <td :id="`Sábado-${slot}`" @click="openOptions('Sábado', slot)">
-              {{ calendar[`Sábado-${slot}`]?.texto || "" }}
+            <td :id="`Sábado-${slot}`" 
+                @click="isSlotBlocked('Sábado', slot) ? null : openOptions('Sábado', slot)"
+                :class="{ 'blocked-slot': isSlotBlocked('Sábado', slot) }">
+              <span v-if="isSlotBlocked('Sábado', slot)">No hay clase en este horario</span>
+              <span v-else>{{ calendar[`Sábado-${slot}`]?.texto || "" }}</span>
             </td>
           </tr>
 
@@ -26,8 +29,10 @@
             <td v-for="day in days.slice(0,5)" 
                 :key="day" 
                 :id="`${day}-${slot}`"
-                @click="openOptions(day, slot)">
-              {{ calendar[`${day}-${slot}`]?.texto || "" }}
+                @click="isSlotBlocked(day, slot) ? null : openOptions(day, slot)"
+                :class="{ 'blocked-slot': isSlotBlocked(day, slot) }">
+              <span v-if="isSlotBlocked(day, slot)">No hay clase en este horario</span>
+              <span v-else>{{ calendar[`${day}-${slot}`]?.texto || "" }}</span>
             </td>
             <td></td>
           </tr>
@@ -199,6 +204,25 @@ onMounted(() => {
 });
 
 // Funciones
+function isSlotBlocked(day, slot) {
+  const time = slot.split(':').map(Number);
+  const hour = time[0];
+  const minute = time[1];
+  const totalMinutes = hour * 60 + minute;
+  
+  // Monday to Friday: 10:00 - 13:45 (600 - 825 minutes)
+  if (day !== 'Sábado' && totalMinutes >= 600 && totalMinutes <= 825) {
+    return true;
+  }
+  
+  // Saturday: 14:45 - 19:00 (885 - 1140 minutes)
+  if (day === 'Sábado' && totalMinutes >= 885 && totalMinutes <= 1140) {
+    return true;
+  }
+  
+  return false;
+}
+
 function openOptions(day, slot) {
   selectedSlot.value = `${day}-${slot}`
   showOptions.value = true
@@ -369,6 +393,12 @@ td {
 }
 td:empty {
   background: #fff;
+}
+.blocked-slot {
+  background: #ffcccc !important;
+  color: #666 !important;
+  cursor: not-allowed !important;
+  font-style: italic;
 }
 ul {
   list-style: none;
