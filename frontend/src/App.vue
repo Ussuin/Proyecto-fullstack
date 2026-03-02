@@ -12,6 +12,10 @@ const alumnos = ref([])
 const profesores = ref([])
 const currentUser = ref(null)
 
+// Base URL del API configurable vía Vite env: VITE_API_URL
+// Por defecto en producción usamos rutas relativas al backend servido en /api
+const API_BASE = import.meta.env.VITE_API_URL || '/api'
+
 onMounted(async () => {
   // Verificar si hay un usuario guardado en localStorage
   const savedUser = localStorage.getItem('currentUser')
@@ -33,10 +37,10 @@ async function loadData() {
     console.log('Cargando datos desde el servidor...')
     
     const [resHorarios, resClases, resAlumnos, resProfesores] = await Promise.all([
-      fetch("http://localhost:3000/horarios"),
-      fetch("http://localhost:3000/clases"),
-      fetch("http://localhost:3000/alumnos"),
-      fetch("http://localhost:3000/profesores")
+      fetch(`${API_BASE}/horarios`),
+      fetch(`${API_BASE}/clases`),
+      fetch(`${API_BASE}/alumnos`),
+      fetch(`${API_BASE}/profesores`)
     ])
 
     if (!resHorarios.ok || !resClases.ok || !resAlumnos.ok || !resProfesores.ok) {
@@ -78,7 +82,7 @@ function logout() {
 
 // Funciones para agregar/eliminar clases
 async function agregarClase(nuevaClase) {
-  const res = await fetch("http://localhost:3000/horarios", {
+  const res = await fetch(`${API_BASE}/horarios`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(nuevaClase)
@@ -88,13 +92,13 @@ async function agregarClase(nuevaClase) {
 }
 
 async function eliminarClase(id) {
-  await fetch(`http://localhost:3000/horarios/${id}`, { method: "DELETE" })
-  horarios.value = horarios.value.filter(h => h.id !== id)
+  await fetch(`${API_BASE}/horarios/${id}`, { method: "DELETE" })
+  horarios.value = horarios.value.filter(h => h._id !== id)
 }
 
 async function crearRecurso(tipo, datos) {
   try {
-    const res = await fetch(`http://localhost:3000/${tipo}`, {
+    const res = await fetch(`${API_BASE}/${tipo}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(datos)
@@ -170,7 +174,7 @@ async function crearRecurso(tipo, datos) {
             :profesores="profesores"
             :onCrearRecurso="crearRecurso"
             @agregar-clase="horarios.push($event)"
-            @eliminar-clase="horarios = horarios.filter(h._id !== $event)"
+            @eliminar-clase="horarios = horarios.filter(h => h._id !== $event)"
           />
 
           <!--agregamos el botón de pago -->
