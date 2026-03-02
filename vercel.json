@@ -4,7 +4,10 @@
     {
       "src": "frontend/package.json",
       "use": "@vercel/static-build",
-      "config": { "distDir": "frontend/dist", "buildCommand": "npm --prefix frontend run build" }
+      "config": {
+        "distDir": "dist",
+        "buildCommand": "npm --prefix frontend run build && mv frontend/dist dist"
+      }
     },
     {
       "src": "backend/src/index.js",
@@ -18,11 +21,11 @@
     },
     {
       "src": "^/(.*)$",
-      "dest": "/frontend/dist/$1"
+      "dest": "/dist/$1"
     }
   ],
   "env": {
     "NODE_ENV": "production"
   },
-  "outputDirectory": "frontend/dist"
+  "outputDirectory": "dist"
 }
