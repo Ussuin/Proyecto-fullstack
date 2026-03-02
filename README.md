@@ -18,6 +18,12 @@ Bienvenido al repositorio oficial del proyecto **AARDEM**, una solución integra
 * **CORS:** Configurado para comunicación segura entre dominios.
 * **PostgreSQL:** Base de datos relacional para la persistencia de datos complejos.
 
+### **Librerias a instalar**
+
+# Instalar dependencias del backend echo "Instalando dependencias del backend..." cd backend npm install
+
+# Instalar dependencias del frontend echo "Instalando dependencias del frontend..." cd frontend npm install
+
 ---
 
 ## Arquitectura del Sistema
