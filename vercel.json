@@ -6,7 +6,7 @@
       "use": "@vercel/node"
     },
     {
-      "src": "package.json",
+      "src": "frontend/package.json",
       "use": "@vercel/static-build",
       "config": {
         "buildCommand": "npm run build",
@@ -21,7 +21,13 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/frontend"
+      "dest": "/frontend/index.html"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
   "env": {
