@@ -3,7 +3,9 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const router = express.Router();
 
-
+// URL base configurables
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+const BACKEND_URL = process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 3000}`;
 
 // Configuración de Passport con Google
 passport.use(
@@ -11,10 +13,10 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/auth/google/callback",
+  callbackURL: process.env.GOOGLE_REDIRECT_URI || `${BACKEND_URL}/auth/google/callback`,
     },
     (accesToken, refreshToken,profile, done) => {
-      console.log("Google Strategy callbackURL:", process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/auth/google/callback");
+  console.log("Google Strategy callbackURL:", process.env.GOOGLE_REDIRECT_URI || `${BACKEND_URL}/auth/google/callback`);
       // Aquí normalmente guardarías el usuario en la base de datos
       // Por ahora, solo retornamos el perfil
       return done(null, profile);
@@ -35,11 +37,11 @@ passport.deserializeUser((user, done) => {
 router.get("/google", (req, res) => {
   console.log("Google auth endpoint hit");
   console.log("Request URL:", req.protocol + '://' + req.get('host') + req.originalUrl);
-  console.log("Callback URL being used:", process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/auth/google/callback");
+  console.log("Callback URL being used:", process.env.GOOGLE_REDIRECT_URI || `${BACKEND_URL}/auth/google/callback`);
   
   passport.authenticate("google", { 
     scope: ["profile", "email"],
-    callbackURL: process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/auth/google/callback"
+    callbackURL: process.env.GOOGLE_REDIRECT_URI || `${BACKEND_URL}/auth/google/callback`
   })(req, res);
 });
 
@@ -54,7 +56,8 @@ router.get(
       message: "Autenticación exitosa con Google",
       user: req.user
     };
-    res.redirect(`http://localhost:5173?auth=${encodeURIComponent(JSON.stringify(userData))}`);
+    // Redirigir al frontend configurado (FRONTEND_URL) con la info de usuario
+    res.redirect(`${FRONTEND_URL}?auth=${encodeURIComponent(JSON.stringify(userData))}`);
   }
 );
 

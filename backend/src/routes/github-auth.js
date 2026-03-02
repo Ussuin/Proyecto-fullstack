@@ -3,6 +3,10 @@ const passport = require("passport");
 const GitHubStrategy = require("passport-github2").Strategy;
 const router = express.Router();
 
+// URL base configurables
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+const BACKEND_URL = process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 3000}`;
+
 // Inicializar Passport
 router.use(passport.initialize());
 router.use(passport.session());
@@ -13,10 +17,10 @@ passport.use(
     {
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: process.env.GITHUB_REDIRECT_URI || "http://localhost:3000/auth/github/callback",
+  callbackURL: process.env.GITHUB_REDIRECT_URI || `${BACKEND_URL}/auth/github/callback`,
     },
     (accessToken, refreshToken, profile, done) => {
-      console.log("GitHub Strategy callbackURL:", process.env.GITHUB_REDIRECT_URI || "http://localhost:3000/auth/github/callback");
+  console.log("GitHub Strategy callbackURL:", process.env.GITHUB_REDIRECT_URI || `${BACKEND_URL}/auth/github/callback`);
       // Aquí normalmente guardarías el usuario en la base de datos
       // Por ahora, solo retornamos el perfil
       return done(null, profile);
@@ -37,11 +41,11 @@ passport.deserializeUser((obj, done) => {
 router.get("/github", (req, res) => {
   console.log("GitHub auth endpoint hit");
   console.log("Request URL:", req.protocol + '://' + req.get('host') + req.originalUrl);
-  console.log("Callback URL being used:", process.env.GITHUB_REDIRECT_URI || "http://localhost:3000/auth/github/callback");
+  console.log("Callback URL being used:", process.env.GITHUB_REDIRECT_URI || `${BACKEND_URL}/auth/github/callback`);
   
   passport.authenticate("github", { 
     scope: ["user:email"],
-    callbackURL: process.env.GITHUB_REDIRECT_URI || "http://localhost:3000/auth/github/callback"
+    callbackURL: process.env.GITHUB_REDIRECT_URI || `${BACKEND_URL}/auth/github/callback`
   })(req, res);
 });
 
@@ -63,8 +67,8 @@ router.get(
       }
     };
     
-    // Redirigir al frontend con los datos como query parameter
-    res.redirect(`http://localhost:5173?auth=${encodeURIComponent(JSON.stringify(userData))}`);
+    // Redirigir al frontend (FRONTEND_URL) con los datos como query parameter
+    res.redirect(`${FRONTEND_URL}?auth=${encodeURIComponent(JSON.stringify(userData))}`);
   }
 );
 

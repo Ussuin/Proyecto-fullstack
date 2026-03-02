@@ -18,12 +18,11 @@ app.use('/api', paymentsRouter);
 
 
 const PORT = process.env.PORT || 3000;
+const BACKEND_URL = process.env.BACKEND_URL || `http://localhost:${PORT}`;
 const server = http.createServer(app);
 
 server.listen(PORT, () => {
-  console.log(`API running on http://localhost:${PORT}`);
+  console.log(`API running on ${BACKEND_URL}`);
   console.log('MongoDB Atlas connection ready');
   console.log("Token cargado:", process.env.MP_ACCESS_TOKEN);
-
-
 });
