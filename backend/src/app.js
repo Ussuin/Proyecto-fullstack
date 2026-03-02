@@ -14,6 +14,7 @@ const googleAuth = require("./routes/google-auth");
 const githubAuth = require("./routes/github-auth");
 const weather = require("./routes/weather");
 const paymentsRouter = require('./routes/payments');
+const openstreetmap = require("./routes/openstreetmap");
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use("/auth", googleAuth);
 app.use("/auth", githubAuth);
 app.use("/weather", weather);
 app.use('/api', paymentsRouter);
+app.use("/openstreetmap", openstreetmap);
 
 
 

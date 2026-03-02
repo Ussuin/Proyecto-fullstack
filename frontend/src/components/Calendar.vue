@@ -92,7 +92,10 @@
           <label>Clase/Instrumento:</label>
           <select v-model="selectedClase">
             <option disabled value="">-- elegir --</option>
-            <option v-for="c in props.clases" :key="c._id" :value="c._id">{{ c.nombre }}</option>
+            <!-- Aquí guardamos el objeto completo -->
+            <option v-for="c in props.clases" :key="c._id" :value="c">
+              {{ c.nombre }}
+            </option>
             <option value="nuevo">+ Agregar Nueva Clase</option>
           </select>
           <div v-if="selectedClase === 'nuevo'" class="nuevo-input">
@@ -140,17 +143,6 @@ const nuevaEspecialidad = ref("")
 const nuevoNombreAlumno = ref("")
 const nuevoNombreClase = ref("")
 
-// Watchers
-watch(selectedProfesor, (newVal) => {
-  console.log('Profesor seleccionado cambió:', newVal);
-});
-watch(selectedAlumno, (newVal) => {
-  console.log('Alumno seleccionado cambió:', newVal);
-});
-watch(selectedClase, (newVal) => {
-  console.log('Clase seleccionada cambió:', newVal);
-});
-
 // Slots
 const saturdaySlots = computed(() => {
   const slots = []
@@ -172,9 +164,9 @@ const weekdaySlots = computed(() => {
   return slots
 })
 
-// Construir calendario
+// Construir calendario usando populate
 const construirCalendario = () => {
-  if (!props.horarios?.length || !props.profesores?.length || !props.clases?.length) return;
+  if (!props.horarios?.length) return;
 
   Object.keys(calendar).forEach(key => delete calendar[key]);
 
@@ -184,18 +176,20 @@ const construirCalendario = () => {
     if (!horaLimpia || !dia) return;
 
     const key = `${dia}-${horaLimpia}`;
-    const profesor = props.profesores.find(p => p._id === h.profesor_id);
-    const clase = props.clases.find(c => c._id === h.clase_id);
+
+    // Gracias a populate, ya tenemos objetos completos
+    const clase = h.clase_id;
+    const profesor = h.profesor_id;
+    const alumno = h.alumno_id;
 
     calendar[key] = {
-      _id: h._id, //  usa siempre _id
-      texto: `${clase?.nombre || 'Clase'} - ${profesor?.nombre || 'Profesor'}`
+      _id: h._id,
+      texto: `Clase de ${clase?.nombre || 'Clase'} - ${profesor?.nombre || 'Profesor'} (${alumno?.nombre || 'Alumno'})`
     };
   });
 };
 
-
-watch([() => props.horarios, () => props.profesores, () => props.clases], () => {
+watch(() => props.horarios, () => {
   construirCalendario();
 }, { deep: true });
 
@@ -291,12 +285,13 @@ async function confirmarClase() {
     const nuevoHorario = await agregarClase(objetoParaAPI);
     console.log("Respuesta del servidor:", nuevoHorario);
 
-    const profesor = props.profesores.find(p => p._id === profesorId || p.id === profesorId);
-    const alumno = props.alumnos.find(a => a._id === alumnoId || a.id === alumnoId);
-    const clase = props.clases.find(c => c._id === claseId || c.id === claseId);
+    // Usamos populate en la respuesta del backend
+    const clase = nuevoHorario.clase_id;
+    const profesor = nuevoHorario.profesor_id;
+    const alumno = nuevoHorario.alumno_id;
 
     calendar[selectedSlot.value] = {
-      texto: `${clase?.nombre || "Clase"} - ${profesor?.nombre || "Profesor"} (${alumno?.nombre || "Alumno"})`,
+      texto: `Clase de ${clase?.nombre || "Clase"} - ${profesor?.nombre || "Profesor"} (${alumno?.nombre || "Alumno"})`,
       _id: nuevoHorario._id
     };
 
@@ -329,11 +324,21 @@ async function agregarClase(nuevaClase) {
   }
 }
 
+
+
 async function eliminarClase(id) {
   if (!id) {
     alert("No se encontró el ID de la clase");
     return;
   }
+
+  // Confirmación antes de eliminar
+  const seguro = window.confirm("¿Estás seguro de que quieres eliminar esta clase?");
+  if (!seguro) {
+    message.value = "Eliminación cancelada";
+    return;
+  }
+
   console.log("Intentando eliminar horario con id:", id);
   try {
     const res = await fetch(`http://localhost:3000/horarios/${id}`, { method: "DELETE" });
@@ -349,6 +354,7 @@ async function eliminarClase(id) {
 }
 
 </script>
+
 
 
 <style scoped>

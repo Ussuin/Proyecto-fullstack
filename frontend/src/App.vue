@@ -4,6 +4,7 @@ import Calendar from './components/Calendar.vue'
 import LoginButton from './components/LoginButton.vue'
 import WeatherWidget from './components/WeatherWidget.vue'
 import PaymentButton from './components/PaymentButton.vue'
+import OpenStreetMap from './components/OpenStreetMap.vue'
 
 const horarios = ref([])
 const clases = ref([])
@@ -145,6 +146,21 @@ async function crearRecurso(tipo, datos) {
       <div v-else class="main-content">
         <div class="sidebar">
           <WeatherWidget />
+          
+          <!-- MAPA DE LA ESCUELA -->
+          <div class="school-map-section">
+            <h3>📍 Ubicación de la Escuela</h3>
+            <OpenStreetMap 
+              address="Av. Alfonso Reyes 228, Contry, 64860 Monterrey, N.L."
+              height="200px"
+              :zoom="16"
+            />
+            <p class="school-address">
+              <strong>Dirección:</strong><br>
+              Av. Alfonso Reyes 228<br>
+              Contry, 64860 Monterrey, N.L.
+            </p>
+          </div>
         </div>
         <div class="calendar-section">
           <Calendar 
@@ -231,7 +247,30 @@ main {
 
 .sidebar {
   width: 300px;
-  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.school-map-section {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+
+.school-map-section h3 {
+  margin: 0 0 15px 0;
+  color: #2c3e50;
+  font-size: 16px;
+  text-align: center;
+}
+
+.school-address {
+  margin: 10px 0 0 0;
+  font-size: 13px;
+  color: #495057;
+  line-height: 1.4;
 }
 
 .calendar-section {
