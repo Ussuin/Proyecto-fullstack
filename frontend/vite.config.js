@@ -6,8 +6,5 @@ import vue from '@vitejs/plugin-vue'
 // en ../dist (directorio raíz "dist") para que Vercel los encuentre fácilmente.
 // Esto evita mover los archivos después de la build.
 export default defineConfig({
-  plugins: [vue()],
-  build: {
-    outDir: '../dist'
-  }
+  plugins: [vue()]
 })

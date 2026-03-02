@@ -6,7 +6,7 @@
       "use": "@vercel/static-build",
       "config": {
         "distDir": "dist",
-        "buildCommand": "npm --prefix frontend run build && mv frontend/dist dist"
+        "buildCommand": "npm run build"
       }
     },
     {
@@ -21,11 +21,11 @@
     },
     {
       "src": "^/(.*)$",
-      "dest": "/dist/$1"
+      "dest": "/frontend/dist/$1"
     }
   ],
   "env": {
     "NODE_ENV": "production"
   },
-  "outputDirectory": "dist"
+  "outputDirectory": "frontend/dist"
 }
