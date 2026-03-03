@@ -5,13 +5,13 @@ const http = require('http');
 const connectDB = require('./src/db');
 const app = require('./src/app'); // importa tu app de Express
 
-// Configurar Google DNS para resolver MongoDB Atlas (opcional, puedes quitarlo si conecta bien sin esto)
+// Configurar Google DNS para resolver MongoDB Atlas 
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 // Conectar a MongoDB Atlas
 connectDB();
 
-// Puerto dinámico (Vercel asigna automáticamente uno en producción)
+// Puerto dinámico 
 const PORT = process.env.PORT || 3000;
 
 // Crear servidor HTTP con Express
