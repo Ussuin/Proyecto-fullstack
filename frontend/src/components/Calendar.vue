@@ -299,6 +299,10 @@ async function confirmarClase() {
   }
 }
 
+// Al inicio del script
+const api = import.meta.env.VITE_API_URL;
+
+// En la función agregarClase
 async function agregarClase(nuevaClase) {
   try {
     const res = await fetch(`${api}/horarios`, {
@@ -319,18 +323,8 @@ async function agregarClase(nuevaClase) {
   }
 }
 
+// En la función eliminarClase
 async function eliminarClase(id) {
-  if (!id) {
-    alert("No se encontró el ID de la clase");
-    return;
-  }
-
-  const seguro = window.confirm("¿Estás seguro de que quieres eliminar esta clase?");
-  if (!seguro) {
-    message.value = "Eliminación cancelada";
-    return;
-  }
-
   try {
     const res = await fetch(`${api}/horarios/${id}`, { method: "DELETE" });
     if (res.ok) {
@@ -343,6 +337,7 @@ async function eliminarClase(id) {
     console.error("Error al eliminar:", error);
   }
 }
+
 </script>
 
 
