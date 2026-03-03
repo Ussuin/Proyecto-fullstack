@@ -2,8 +2,8 @@
 require('dotenv').config();
 const dns = require('dns');
 const http = require('http');
-const connectDB = require('./db');
-const app = require('./app'); // importa tu app de Express
+const connectDB = require('./src/db');
+const app = require('./src/app'); // importa tu app de Express
 
 // Configurar Google DNS para resolver MongoDB Atlas (opcional, puedes quitarlo si conecta bien sin esto)
 dns.setServers(['8.8.8.8', '8.8.4.4']);
