@@ -11,22 +11,50 @@ const clases = ref([])
 const alumnos = ref([])
 const profesores = ref([])
 const currentUser = ref(null)
+const error = ref('')
 
 // Base URL del API configurable vía Vite env: VITE_API_URL
-// Por defecto en producción usamos rutas relativas al backend servido en /api
 const API_BASE = import.meta.env.VITE_API_URL;
 
+// Manejar el callback de autenticación
+const handleAuthCallback = () => {
+  const urlParams = new URLSearchParams(window.location.search)
+  const authData = urlParams.get('auth')
+
+  if (authData) {
+    try {
+      const decoded = decodeURIComponent(authData)
+      console.log("Auth data recibido:", decoded)
+      const userData = JSON.parse(decoded)
+      currentUser.value = userData
+      localStorage.setItem('currentUser', JSON.stringify(userData))
+      // Limpia la URL para que no quede el ?auth
+      window.history.replaceState({}, document.title, window.location.pathname)
+      loadData()
+    } catch (err) {
+      error.value = 'Error al procesar la respuesta de autenticación'
+      console.error('Error en callback:', err)
+    }
+  } else {
+    console.warn("⚠️ No se recibió parámetro 'auth' en la URL")
+  }
+}
 
 onMounted(async () => {
-  // Verificar si hay un usuario guardado en localStorage
-  const savedUser = localStorage.getItem('currentUser')
-  if (savedUser) {
-    currentUser.value = JSON.parse(savedUser)
+  // Primero procesamos el callback si existe
+  handleAuthCallback()
+
+  // Si no hay callback, revisamos localStorage
+  if (!currentUser.value) {
+    const savedUser = localStorage.getItem('currentUser')
+    if (savedUser) {
+      currentUser.value = JSON.parse(savedUser)
+    }
   }
-  
+
   // Cargar datos solo si hay usuario autenticado
   if (currentUser.value) {
-    console.log('Usuario autenticado:', currentUser.value.displayName)
+    console.log('Usuario autenticado:', currentUser.value.displayName || currentUser.value.username)
     await loadData()
   } else {
     console.log('No hay usuario autenticado - mostrando login')
@@ -64,13 +92,6 @@ async function loadData() {
   }
 }
 
-// Función para manejar el login exitoso
-function handleLoginSuccess(userData) {
-  currentUser.value = userData.user
-  localStorage.setItem('currentUser', JSON.stringify(userData.user))
-  loadData()
-}
-
 // Función para cerrar sesión
 function logout() {
   currentUser.value = null
@@ -80,48 +101,8 @@ function logout() {
   alumnos.value = []
   profesores.value = []
 }
-
-// Funciones para agregar/eliminar clases
-async function agregarClase(nuevaClase) {
-  const res = await fetch(`${API_BASE}/horarios`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(nuevaClase)
-  })
-  const saved = await res.json()
-  horarios.value.push(saved)
-}
-
-async function eliminarClase(id) {
-  await fetch(`${API_BASE}/horarios/${id}`, { method: "DELETE" })
-  horarios.value = horarios.value.filter(h => h._id !== id)
-}
-
-async function crearRecurso(tipo, datos) {
-  try {
-    const res = await fetch(`${API_BASE}/${tipo}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(datos)
-    });
-    const nuevoRegistro = await res.json();
-    
-    if (res.ok) {
-      // Actualizamos la lista correspondiente para que aparezca en el dropdown
-      if (tipo === 'profesores') profesores.value.push(nuevoRegistro);
-      if (tipo === 'alumnos') alumnos.value.push(nuevoRegistro);
-      if (tipo === 'clases') clases.value.push(nuevoRegistro);
-      
-      return nuevoRegistro; // Retornamos el objeto con su nuevo ID
-    } else {
-      alert("Error: " + nuevoRegistro.error);
-    }
-  } catch (e) {
-    console.error("Error de red", e);
-  }
-}
-
 </script>
+
 
 <template>
   <div id="app">
