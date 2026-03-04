@@ -29,49 +29,11 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import LoginButton from './components/LoginButton.vue'
 
-
-// Base URL del API configurable via Vite env: VITE_API_URL
-// Por defecto en producción usamos rutas relativas al backend servido en /api
-const API_BASE = import.meta.env.VITE_API_URL
-
-
-const loading = ref(false)
+const user = ref(null)
 const error = ref('')
 
-const emit = defineEmits(['login-success'])
-
-const loginWithGoogle = async () => {
-  loading.value = true
-  error.value = ''
-  
-  try {
-  // Redirigir al backend para iniciar el flujo de autenticación con Google
-  window.location.href = `${API_BASE}/auth/google`
-  } catch (err) {
-    error.value = 'Error al iniciar sesión con Google'
-    console.error('Error de login:', err)
-  } finally {
-    loading.value = false
-  }
-}
-
-const loginWithGitHub = async () => {
-  loading.value = true
-  error.value = ''
-  
-  try {
-  // Redirigir al backend para iniciar el flujo de autenticación con GitHub
-  window.location.href = `${API_BASE}/auth/github`
-  } catch (err) {
-    error.value = 'Error al iniciar sesión con GitHub'
-    console.error('Error de login:', err)
-  } finally {
-    loading.value = false
-  }
-}
-
-// Esta función se llamará cuando el usuario sea redirigido de vuelta desde Google o GitHub
 const handleAuthCallback = () => {
   const urlParams = new URLSearchParams(window.location.search)
   const authData = urlParams.get('auth')
@@ -81,23 +43,23 @@ const handleAuthCallback = () => {
       const decoded = decodeURIComponent(authData)
       console.log("Auth data recibido:", decoded)
       const userData = JSON.parse(decoded)
-      emit('login-success', userData)
+      user.value = userData
+      // Limpia la URL para que no quede el ?auth
       window.history.replaceState({}, document.title, window.location.pathname)
     } catch (err) {
       error.value = 'Error al procesar la respuesta de autenticación'
       console.error('Error en callback:', err)
     }
   } else {
-    console.warn("No se recibió parámetro 'auth' en la URL")
+    console.warn("⚠️ No se recibió parámetro 'auth' en la URL")
   }
 }
 
-
-
-
-// Verificar si hay un callback de autenticación al cargar el componente
-handleAuthCallback()
+onMounted(() => {
+  handleAuthCallback()
+})
 </script>
+
 
 <style scoped>
 .login-container {
