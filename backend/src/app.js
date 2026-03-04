@@ -42,7 +42,7 @@ app.use("/horarios", horarios);
 app.use("/auth", googleAuth);
 app.use("/auth", githubAuth);
 app.use("/weather", weather);
-app.use('/api', paymentsRouter);
+app.use('/', paymentsRouter);
 app.use("/openstreetmap", openstreetmap);
 
 
