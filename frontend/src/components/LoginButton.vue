@@ -71,23 +71,25 @@ const loginWithGitHub = async () => {
 }
 
 // Esta función se llamará cuando el usuario sea redirigido de vuelta desde Google o GitHub
-const handleAuthCallback = async () => {
+const handleAuthCallback = () => {
   const urlParams = new URLSearchParams(window.location.search)
   const authData = urlParams.get('auth')
   
-  // Manejar respuesta de Google o GitHub (viene como query parameter 'auth')
   if (authData) {
     try {
       const userData = JSON.parse(decodeURIComponent(authData))
-      emit('login-success', userData)
-      // Limpiar la URL
+      console.log("Usuario autenticado:", userData)
+      // Aquí guardas el usuario en tu store o estado
       window.history.replaceState({}, document.title, window.location.pathname)
     } catch (err) {
-      error.value = 'Error al procesar la respuesta de autenticación'
-      console.error('Error en callback:', err)
+      console.error("Error procesando auth:", err)
     }
   }
 }
+
+onMounted(() => {
+  handleAuthCallback()
+})
 
 // Verificar si hay un callback de autenticación al cargar el componente
 handleAuthCallback()
