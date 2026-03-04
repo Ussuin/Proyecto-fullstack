@@ -323,18 +323,28 @@ async function agregarClase(nuevaClase) {
   }
 }
 
+
 // En la función eliminarClase
 async function eliminarClase(id) {
   try {
-    const res = await fetch(`${api}/horarios/${id}`, { method: "DELETE" });
+    //  Confirmación
+    const seguro = confirm("¿Seguro que quieres eliminar esta clase?")
+    if (!seguro) {
+      return // Si el usuario cancela, no hacemos nada
+    }
+
+    // Petición al backend
+    const res = await fetch(`${api}/horarios/${id}`, { method: "DELETE" })
+
+    //  Manejo de respuesta
     if (res.ok) {
-      delete calendar[selectedSlot.value];
-      message.value = "Clase eliminada correctamente";
+      delete calendar[selectedSlot.value]
+      message.value = "Clase eliminada correctamente"
     } else {
-      alert("No se pudo eliminar de la base de datos");
+      alert("No se pudo eliminar de la base de datos")
     }
   } catch (error) {
-    console.error("Error al eliminar:", error);
+    console.error("Error al eliminar:", error)
   }
 }
 
