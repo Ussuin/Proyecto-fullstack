@@ -164,7 +164,7 @@ const weekdaySlots = computed(() => {
 })
 
 // URL base del backend (se adapta según entorno)
-const API_BASE = import.meta.env.VITE_API_URL || '/api'
+const API_BASE = import.meta.env.VITE_API_URL;
 
 // Construir calendario usando populate
 const construirCalendario = () => {
