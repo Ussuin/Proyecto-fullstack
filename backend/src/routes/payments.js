@@ -31,8 +31,10 @@ router.post('/pago', async (req, res) => {
       auto_return: 'approved'
     };
 
-   const response = await preferenceClient.create({ body: preference });
-res.json({ init_point: response.body.init_point });
+  const response = await preferenceClient.create({ body: preference });
+  console.log("Respuesta de MercadoPago:", response);
+  res.json({ init_point: response.body.init_point });
+
   } catch (error) {
   console.error('Error creando pago:', error);
   res.status(500).json({ error: error.message, details: error });
