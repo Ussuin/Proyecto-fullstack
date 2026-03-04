@@ -28,36 +28,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+const API_BASE = import.meta.env.VITE_API_URL
 
-
-const user = ref(null)
-const error = ref('')
-
-const handleAuthCallback = () => {
-  const urlParams = new URLSearchParams(window.location.search)
-  const authData = urlParams.get('auth')
-
-  if (authData) {
-    try {
-      const decoded = decodeURIComponent(authData)
-      console.log("Auth data recibido:", decoded)
-      const userData = JSON.parse(decoded)
-      user.value = userData
-      // Limpia la URL para que no quede el ?auth
-      window.history.replaceState({}, document.title, window.location.pathname)
-    } catch (err) {
-      error.value = 'Error al procesar la respuesta de autenticación'
-      console.error('Error en callback:', err)
-    }
-  } else {
-    console.warn("⚠️ No se recibió parámetro 'auth' en la URL")
-  }
+const loginWithGoogle = () => {
+  window.location.href = `${API_BASE}/auth/google`
 }
 
-onMounted(() => {
-  handleAuthCallback()
-})
+const loginWithGitHub = () => {
+  window.location.href = `${API_BASE}/auth/github`
+}
 </script>
 
 
