@@ -28,7 +28,8 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+
 
 // Base URL del API configurable via Vite env: VITE_API_URL
 // Por defecto en producción usamos rutas relativas al backend servido en /api
@@ -74,18 +75,23 @@ const loginWithGitHub = async () => {
 const handleAuthCallback = () => {
   const urlParams = new URLSearchParams(window.location.search)
   const authData = urlParams.get('auth')
-  
+
   if (authData) {
     try {
-      const userData = JSON.parse(decodeURIComponent(authData))
-      console.log("Usuario autenticado:", userData)
-      // Aquí guardas el usuario en tu store o estado
+      const decoded = decodeURIComponent(authData)
+      console.log("Auth data recibido:", decoded)
+      const userData = JSON.parse(decoded)
+      emit('login-success', userData)
       window.history.replaceState({}, document.title, window.location.pathname)
     } catch (err) {
-      console.error("Error procesando auth:", err)
+      error.value = 'Error al procesar la respuesta de autenticación'
+      console.error('Error en callback:', err)
     }
+  } else {
+    console.warn("No se recibió parámetro 'auth' en la URL")
   }
 }
+
 
 
 
