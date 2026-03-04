@@ -29,7 +29,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import LoginButton from './components/LoginButton.vue'
+
 
 const user = ref(null)
 const error = ref('')
