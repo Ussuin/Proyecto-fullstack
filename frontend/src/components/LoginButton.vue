@@ -87,9 +87,7 @@ const handleAuthCallback = () => {
   }
 }
 
-onMounted(() => {
-  handleAuthCallback()
-})
+
 
 // Verificar si hay un callback de autenticación al cargar el componente
 handleAuthCallback()
