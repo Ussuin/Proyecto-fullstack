@@ -51,7 +51,7 @@ import { ref, onMounted } from 'vue'
 
 // Base URL del API configurable via Vite env: VITE_API_URL
 // Por defecto en producción usamos rutas relativas al backend servido en /api
-const API_BASE = import.meta.env.VITE_API_URL || '/api'
+const API_BASE = import.meta.env.VITE_API_URL;
 
 const weather = ref(null)
 const loading = ref(false)
