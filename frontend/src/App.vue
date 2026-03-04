@@ -13,10 +13,8 @@ const profesores = ref([])
 const currentUser = ref(null)
 const error = ref('')
 
-// Base URL del API configurable vía Vite env: VITE_API_URL
 const API_BASE = import.meta.env.VITE_API_URL;
 
-// Manejar el callback de autenticación
 const handleAuthCallback = () => {
   const urlParams = new URLSearchParams(window.location.search)
   const authData = urlParams.get('auth')
@@ -30,18 +28,15 @@ const handleAuthCallback = () => {
       localStorage.setItem('currentUser', JSON.stringify(userData))
       // Limpia la URL para que no quede el ?auth
       window.history.replaceState({}, document.title, window.location.pathname)
-      loadData()
     } catch (err) {
       error.value = 'Error al procesar la respuesta de autenticación'
       console.error('Error en callback:', err)
     }
-  } else {
-    console.warn("⚠️ No se recibió parámetro 'auth' en la URL")
   }
 }
 
 onMounted(async () => {
-  // Primero procesamos el callback si existe
+  // Procesar callback primero
   handleAuthCallback()
 
   // Si no hay callback, revisamos localStorage
@@ -61,47 +56,6 @@ onMounted(async () => {
   }
 })
 
-async function loadData() {
-  try {
-    console.log('Cargando datos desde el servidor...')
-    
-    const [resHorarios, resClases, resAlumnos, resProfesores] = await Promise.all([
-      fetch(`${API_BASE}/horarios`),
-      fetch(`${API_BASE}/clases`),
-      fetch(`${API_BASE}/alumnos`),
-      fetch(`${API_BASE}/profesores`)
-    ])
-
-    if (!resHorarios.ok || !resClases.ok || !resAlumnos.ok || !resProfesores.ok) {
-      throw new Error('Error en una o más respuestas del servidor')
-    }
-
-    horarios.value = await resHorarios.json()
-    clases.value = await resClases.json()
-    alumnos.value = await resAlumnos.json()
-    profesores.value = await resProfesores.json()
-    
-    console.log('Datos cargados exitosamente')
-    console.log('Horarios:', horarios.value.length)
-    console.log('Clases:', clases.value.length)
-    console.log('Alumnos:', alumnos.value.length)
-    console.log('Profesores:', profesores.value.length)
-  } catch (error) {
-    console.error('Error cargando datos:', error)
-    alert('No se pudo conectar con el servidor. Por favor, verifica que el backend esté corriendo.')
-  }
-}
-
-// Función para cerrar sesión
-function logout() {
-  currentUser.value = null
-  localStorage.removeItem('currentUser')
-  horarios.value = []
-  clases.value = []
-  alumnos.value = []
-  profesores.value = []
-}
-</script>
 
 
 <template>
