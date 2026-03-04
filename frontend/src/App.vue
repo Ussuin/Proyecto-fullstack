@@ -14,7 +14,8 @@ const currentUser = ref(null)
 
 // Base URL del API configurable vía Vite env: VITE_API_URL
 // Por defecto en producción usamos rutas relativas al backend servido en /api
-const API_BASE = import.meta.env.VITE_API_URL || '/api'
+const API_BASE = import.meta.env.VITE_API_URL;
+
 
 onMounted(async () => {
   // Verificar si hay un usuario guardado en localStorage
