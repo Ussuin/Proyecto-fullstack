@@ -5,8 +5,6 @@
 </template>
 
 <script setup>
-// Base URL del API configurable via Vite env: VITE_API_URL
-// Por defecto en producción usamos rutas relativas al backend servido en /api
 const API_BASE = import.meta.env.VITE_API_URL;
 
 async function iniciarPago() {
@@ -18,9 +16,13 @@ async function iniciarPago() {
     const data = await response.json();
     if (data.init_point) {
       window.location.href = data.init_point;
+    } else {
+      console.error("La API no devolvió init_point:", data);
+      alert("No se pudo iniciar el pago");
     }
   } catch (error) {
     console.error("Error iniciando pago:", error);
+    alert("Error iniciando pago");
   }
 }
 </script>
