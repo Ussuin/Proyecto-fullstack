@@ -26,8 +26,8 @@ const handleAuthCallback = () => {
       const userData = JSON.parse(decoded)
       currentUser.value = userData
       localStorage.setItem('currentUser', JSON.stringify(userData))
-      // Limpia la URL para que no quede el ?auth
       window.history.replaceState({}, document.title, window.location.pathname)
+      loadData()
     } catch (err) {
       error.value = 'Error al procesar la respuesta de autenticación'
       console.error('Error en callback:', err)
@@ -36,10 +36,8 @@ const handleAuthCallback = () => {
 }
 
 onMounted(async () => {
-  // Procesar callback primero
   handleAuthCallback()
 
-  // Si no hay callback, revisamos localStorage
   if (!currentUser.value) {
     const savedUser = localStorage.getItem('currentUser')
     if (savedUser) {
@@ -47,7 +45,6 @@ onMounted(async () => {
     }
   }
 
-  // Cargar datos solo si hay usuario autenticado
   if (currentUser.value) {
     console.log('Usuario autenticado:', currentUser.value.displayName || currentUser.value.username)
     await loadData()
@@ -56,6 +53,38 @@ onMounted(async () => {
   }
 })
 
+async function loadData() {
+  try {
+    const [resHorarios, resClases, resAlumnos, resProfesores] = await Promise.all([
+      fetch(`${API_BASE}/horarios`),
+      fetch(`${API_BASE}/clases`),
+      fetch(`${API_BASE}/alumnos`),
+      fetch(`${API_BASE}/profesores`)
+    ])
+
+    if (!resHorarios.ok || !resClases.ok || !resAlumnos.ok || !resProfesores.ok) {
+      throw new Error('Error en una o más respuestas del servidor')
+    }
+
+    horarios.value = await resHorarios.json()
+    clases.value = await resClases.json()
+    alumnos.value = await resAlumnos.json()
+    profesores.value = await resProfesores.json()
+  } catch (error) {
+    console.error('Error cargando datos:', error)
+    alert('No se pudo conectar con el servidor. Por favor, verifica que el backend esté corriendo.')
+  }
+}
+
+function logout() {
+  currentUser.value = null
+  localStorage.removeItem('currentUser')
+  horarios.value = []
+  clases.value = []
+  alumnos.value = []
+  profesores.value = []
+}
+</script>
 
 
 <template>
