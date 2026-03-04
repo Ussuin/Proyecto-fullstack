@@ -1,4 +1,3 @@
-// frontend/server.js
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -17,6 +16,6 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
-app.listen(PORT, () => {
-  console.log(`Frontend corriendo en puerto ${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Frontend corriendo en http://0.0.0.0:${PORT}`);
 });
