@@ -34,6 +34,8 @@ router.get(
       avatar: req.user.photos?.[0]?.value || null,
       provider: "google"
     };
+    console.log("Redirecting with userData:", userData);
+
     res.redirect(`${FRONTEND_URL}?auth=${encodeURIComponent(JSON.stringify(userData))}`);
   }
 );
